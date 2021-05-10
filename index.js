@@ -1,14 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
-require("dotenv").config();
+const path = require('path');
+require("dotenv").config({ path: path.resolve(__dirname, './config.env') });
 
 const app = express()
 app.use(express.json());
-const port = 3000 ;
+const port = 3001 ;
 
 
 //DB connect
 const dbUrl = "mongodb+srv://admin:VuObxznu9XqHHJTD@cluster0.k1vku.mongodb.net/store?retryWrites=true&w=majority"
+//const dbUrl = process.env.DATABASE_URI
 mongoose
   .connect(dbUrl, {
     useNewUrlParser: true,
@@ -157,9 +159,9 @@ app.delete('/toys/:id', async (req, res) => {
 
 app.patch('/toys/:id', async (req, res) => {
   //try{
-    const item = await toysDb.findOneAndUpdate({ "_id": req.params.id }, req.body, {upsert: false, new:true}, function(err, doc) {
+    await toysDb.findOneAndUpdate({ "_id": req.params.id }, req.body, {upsert: false, new:true}, function(err, doc) {
       if (err) return res.status(500).send(err);
-      return res.send(item);
+      return res.send(doc);
   });
 /*    res.status(201).send("Entry Created");
   }catch(e){
